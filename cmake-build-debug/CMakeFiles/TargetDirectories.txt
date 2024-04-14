@@ -1,0 +1,3 @@
+C:/Users/jetts/CLionProjects/CheckersWithOOP/cmake-build-debug/CMakeFiles/CheckersWithOOP.dir
+C:/Users/jetts/CLionProjects/CheckersWithOOP/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/jetts/CLionProjects/CheckersWithOOP/cmake-build-debug/CMakeFiles/rebuild_cache.dir
