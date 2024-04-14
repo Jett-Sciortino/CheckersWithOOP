@@ -13,7 +13,7 @@
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 #endif
 
-#define CENTER "\t\t\t\t\t\t"
+#define CENTER "\t\t\t\t\t\t\t\t\t\t"
 
 Board::Board() {
 
@@ -35,7 +35,8 @@ Board::Board() {
 void Board::display() {
 
     char rowLetter = 'a';
-    std::cout << CENTER << "   1    2    3    4    5    6    7    8\n +----+----+----+----+----+----+----+----+\n";
+    std::cout << CENTER << "   1    2    3    4    5    6    7    8\n "
+                        << CENTER << " +----+----+----+----+----+----+----+----+\n";
 
     for (int y = 0; y < 8; ++y) {
 
@@ -56,7 +57,8 @@ void Board::display() {
             } else
                 std::cout << "|    ";
         }
-        std::cout << CENTER << "|\n +----+----+----+----+----+----+----+----+\n";
+        std::cout << "|\n "
+                  << CENTER << " +----+----+----+----+----+----+----+----+\n";
     }
 }
 
