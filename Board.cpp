@@ -13,6 +13,14 @@
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 #endif
 
+#ifdef __linux__
+#define RED cout << "\033[1;31m"
+#define BLACK cout << "\033[1;90m"
+#define GOLD cout << "\033[1;93m"
+#define HIGHLIGHT cout << "\033[1;46"
+#define NO_COLOR cout << "\033[1m"
+#endif
+
 #define CENTER "\t\t\t\t\t\t\t\t\t\t"
 
 Board::Board() {
