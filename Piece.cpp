@@ -1,10 +1,9 @@
 #include "Piece.h"
+#include "Coordinate.h"
 #include <vector>
-#include "TypeDef.h"
 
-Piece::Piece(bool isRed, Coordinate coordinate) {
+Piece::Piece(bool isRed, Coordinate coordinate) : isRed(isRed){
 
-    this->isRed = isRed;
     this->coordinate = coordinate;
     this->isKing = false;
 }
@@ -14,29 +13,39 @@ bool Piece::getIsRed() const {
     return this->isRed;
 }
 
-std::vector<Move> Piece::getPossibleMoves(Board board) {
+std::vector<Move> Piece::getPossibleMoves(Board board) const {
 
     std::vector<Move> moves(0);
 
     int pieceX = this->coordinate.x, pieceY = this->coordinate.y,
         yIncrement = 1, rows = 1;
 
+    //Red Pieces move in the negatve y direction
     if(this->isRed)
         yIncrement = -1;
-    
+
+    //Kings have two rows that they look at for normal moves
     if(this->isKing)
         rows = 2;
 
+    //starting y value to look at
     int Y = pieceY + yIncrement;
 
+    /*
+     * Looks at all the spaces that the Piece cold possibly move to
+     * and checks if that is space it could actually move to
+     */
     for (int i = 0; i < rows; i++) {
 
             for (int X = pieceX - 1; X <= pieceX + 1; X += 2) {
 
+                //Is it on the board?
                 if (Coordinate(X, Y).isOnBoard()) {
 
+                    //Is there a blank space there?
                     if (board.getPieceAt(Coordinate(X, Y)) == nullptr) {
 
+                        //If so then add a Move to the vector
                         moves.emplace_back(this->coordinate, Coordinate(X, Y), false);
                     }
                 }
@@ -45,20 +54,22 @@ std::vector<Move> Piece::getPossibleMoves(Board board) {
         Y -= 2 * yIncrement;
     }
 
+    //Get all the possible jumps from that position and put them in the vector
     std::vector<Move> possibleJumps = this->getPossibleJumps(board);
     moves.insert(moves.end(), possibleJumps.begin(),possibleJumps.end());
-    
+
     return moves;
 }
 
 
-std::vector<Move> Piece::getPossibleJumps(Board board) {
+std::vector<Move> Piece::getPossibleJumps(Board board) const {
 
     std::vector<Move> jumps(0);
 
     int pieceX = this->coordinate.x, pieceY = this->coordinate.y,
                  yIncrement = 2, rows = 1;
 
+    //Checks two away from the Piece instead of 1
     if(this->isRed)
         yIncrement = -2;
 
@@ -67,25 +78,37 @@ std::vector<Move> Piece::getPossibleJumps(Board board) {
 
     int Y = pieceY + yIncrement;
 
+    /*
+     * Same as the getPossibleMoves loop except that it looks at an intermediate space too
+     */
     for (int i = 0; i < rows; i++) {
 
             for (int X = pieceX - 2; X <= pieceX + 2; X += 4) {
 
-                if (Coordinate(X, Y).isOnBoard()) {
-                    
+                Coordinate potentialEndingCoord(X, Y);
+
+                //Is it on the board?
+                if (potentialEndingCoord.isOnBoard()) {
+
+                    //Intermediate piece
                     Coordinate averageCoord((X + pieceX) / 2, (Y + pieceY) / 2);
                     Piece* averagePiece = board.getPieceAt(averageCoord);
 
-                    if (board.getPieceAt(Coordinate(X, Y)) == nullptr
+                    //Is ending piece pointer at ending Coordinate a null pointer?
+                    //Is the intermediate piece pointer a null pointer?
+                    //Is the intermediate piece the opposite color?
+                    if (board.getPieceAt(potentialEndingCoord) == nullptr
                         && averagePiece != nullptr
                         && averagePiece->isRed != this->isRed) {
 
-                        jumps.emplace_back(this->coordinate, Coordinate(X,Y), true);
+
+                        Move jumpMove = Move(this->coordinate, potentialEndingCoord, true);
+                        jumps.push_back(jumpMove);
                     }
                 }
             }
 
-        Y -= 4 * yIncrement;
+        Y -= 2 * yIncrement;
     }
 
     return jumps;
@@ -94,4 +117,20 @@ std::vector<Move> Piece::getPossibleJumps(Board board) {
 void Piece::setCoordinate(Coordinate coord) {
 
     this->coordinate = coord;
+}
+
+void Piece::setIsKing(bool isKing) {
+
+    this->isKing = isKing;
+}
+
+bool Piece::checkIsKing() const {
+
+    //Is it at the opposite end of the board?
+    return this->isRed && this->coordinate.y == 1 || !this->isRed && this->coordinate.y == Board::SIZE;
+}
+
+bool Piece::getIsKing() const {
+
+    return this->isKing;
 }

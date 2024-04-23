@@ -1,83 +1,200 @@
 #include "Board.h"
+#include "Coordinate.h"
 #include <iostream>
 #include <vector>
-#include "TypeDef.h"
-
-#ifdef _WIN32
-#include <windows.h>
-#define RED SetConsoleTextAttribute(hConsole, 4)
-#define BLACK SetConsoleTextAttribute(hConsole, 8)
-#define GOLD SetConsoleTextAttribute(hConsole, 14)
-#define HIGHLIGHT SetConsoleTextAttribute(hConsole, 31)
-#define NO_COLOR SetConsoleTextAttribute(hConsole, 7)
-HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-#endif
-
-#ifdef __linux__
-#define RED cout << "\033[1;31m"
-#define BLACK cout << "\033[1;90m"
-#define GOLD cout << "\033[1;93m"
-#define HIGHLIGHT cout << "\033[1;46"
-#define NO_COLOR cout << "\033[1m"
-#endif
-
-#define CENTER "\t\t\t\t\t\t\t\t\t\t"
 
 Board::Board() {
 
-    for(int y = 1; y < 9; y++) {
+    for(int y = 1; y < SIZE + 1; y++) {
 
-        for (int x = 1; x < 9; x++) {
+        for (int x = 1; x < SIZE + 1; x++) {
 
             Coordinate coord = Coordinate(x, y);
+
+            //Creates Piece object
             if(y < 4 && coord.isCheckerSquare())
                 boardArr[y -1][x - 1] = new Piece(false, coord);
-            else if(y > 5 && coord.isCheckerSquare())
+            else if(y > SIZE - 3 && coord.isCheckerSquare())
                 boardArr[y - 1][x - 1] = new Piece(true, coord);
+            //Null pointer is used as an empty space
             else
                 boardArr[y - 1][x - 1] = nullptr;
         }
     }
 }
 
-void Board::display() {
+void Board::display() const {
 
     char rowLetter = 'a';
-    std::cout << CENTER << "   1    2    3    4    5    6    7    8\n "
-                        << CENTER << " +----+----+----+----+----+----+----+----+\n";
 
-    for (int y = 0; y < 8; ++y) {
+    //Top numbers
+    for(int i = 1; i <= SIZE; i++)
+        std::cout << "    " << i;
 
-        std::cout << CENTER << rowLetter++;
-        for (int x = 0; x < 8; ++x) {
+    std::cout << "\n ";
 
-            if (boardArr[y][x] != nullptr && boardArr[y][x]->getIsRed()) {
-                std::cout << "| ";
-                RED;
-                std::cout << "RR ";
-                NO_COLOR;
+    //Top line
+    for(int i = 1; i <= SIZE; i++)
+        std::cout << "+----";
 
-            } else if (boardArr[y][x] != nullptr && !boardArr[y][x]->getIsRed()) {
-                std::cout << "| ";
-                BLACK;
-                std::cout << "BB ";
-                NO_COLOR;
-            } else
+    std::cout << "+\n";
+
+    //Prints the corresponding letter for the different Piece types i.e. Black King or Normal Red
+    for (const auto& y: boardArr) {
+
+        std::cout << rowLetter++;
+        for (auto piece: y) {
+
+            if(piece != nullptr) {
+                if(piece->getIsKing()) {
+                    if(piece->getIsRed()) {
+                        std::cout << "| ";
+                        //Changes the text color to gold for king
+                        GOLD;
+                        std::cout << "K";
+                        //Changes the text color to red
+                        RED;
+                        std::cout << "R ";
+                        //Changes the text color back to normal
+                        NO_COLOR;
+                    }
+                    else {
+                        std::cout << "| ";
+                        GOLD;
+                        std::cout << "K";
+                        //Changes the text color to black
+                        BLACK;
+                        std::cout << "B ";
+                        NO_COLOR;
+                    }
+                } else {
+                    if(piece->getIsRed()) {
+                        std::cout << "| ";
+                        RED;
+                        std::cout << "RR ";
+                        NO_COLOR;
+                    }
+                    else {
+                        std::cout << "| ";
+                        BLACK;
+                        std::cout << "BB ";
+                        NO_COLOR;
+                    }
+                }
+            }
+            else
                 std::cout << "|    ";
         }
-        std::cout << "|\n "
-                  << CENTER << " +----+----+----+----+----+----+----+----+\n";
+        std::cout << "|\n ";
+
+        //Lines in between rows
+        for(int i = 1; i <= SIZE; i++)
+            std::cout << "+----";
+
+        std::cout << "+\n";
     }
 }
 
+void Board::display(const std::vector<Move>& possibleMoves) const {
 
+    char rowLetter = 'a';
+
+    for(int i = 1; i <= SIZE; i++)
+        std::cout << "    " << i;
+
+    std::cout << "\n ";
+
+    for(int i = 1; i <= SIZE; i++)
+        std::cout << "+----";
+
+    std::cout << "+\n";
+
+    for (int y = 1; y < SIZE + 1; ++y) {
+
+        std::cout << rowLetter++;
+
+        for (int x = 1; x < SIZE + 1; ++x) {
+
+            bool moveFound = false;
+            Piece* piece = boardArr[y - 1][x - 1];
+
+            if(piece != nullptr) {
+                if(piece->getIsKing()) {
+                    if(piece->getIsRed()) {
+                        std::cout << "| ";
+                        GOLD;
+                        std::cout << "K";
+                        RED;
+                        std::cout << "R ";
+                        NO_COLOR;
+                    }
+                    else {
+                        std::cout << "| ";
+                        GOLD;
+                        std::cout << "K";
+                        BLACK;
+                        std::cout << "B ";
+                        NO_COLOR;
+                    }
+                } else {
+                    if(piece->getIsRed()) {
+                        std::cout << "| ";
+                        RED;
+                        std::cout << "RR ";
+                        NO_COLOR;
+                    }
+                    else {
+                        std::cout << "| ";
+                        BLACK;
+                        std::cout << "BB ";
+                        NO_COLOR;
+                    }
+                }
+            } else {
+
+                //Used to display the possible moves
+                for (int i=0; i < possibleMoves.size(); i++) {
+
+                    if (possibleMoves[i].getEndingCoord().x == x && possibleMoves[i].getEndingCoord().y == y) {
+                        std::cout << "| ";
+                        //Changes the color of the text to be blue
+                        HIGHLIGHT;
+                        std::cout << i+1;
+                        NO_COLOR;
+                        std::cout << "  ";
+                        moveFound = true;
+                    }
+                }
+
+                if(!moveFound)
+                    std::cout << "|    ";
+            }
+        }
+
+        std::cout << "|\n ";
+
+        for(int i = 1; i <= SIZE; i++)
+            std::cout << "+----";
+
+        std::cout << "+\n";
+    }
+}
+
+Piece* Board::getPieceAt(Coordinate coord) const {
+
+    return this->boardArr[coord.y - 1][coord.x - 1];
+}
 
 void Board::applyMove(Move move) {
 
     Coordinate start = move.getStartingCoord();
     Coordinate end = move.getEndingCoord();
-    Piece *pieceToMove = boardArr[start.y - 1][start.x - 1];
+    Piece* pieceToMove = boardArr[start.y - 1][start.x - 1];
 
+    /*If it is a jump move change the starting position and the intermediate position to null pointer
+     *Then change the ending position to the Piece that is being moved
+     *Finally check to see if the piece can be promoted. If so, promote it
+     */
     if (move.getIsJump()) {
 
         Coordinate average((start.x + end.x) / 2, (start.y + end.y) / 2);
@@ -86,66 +203,116 @@ void Board::applyMove(Move move) {
         boardArr[average.y - 1][average.x - 1] = nullptr;
         boardArr[end.y - 1][end.x - 1] = pieceToMove;
         pieceToMove->setCoordinate(end);
+        if(pieceToMove->checkIsKing())
+            pieceToMove->setIsKing(true);
     }
+    //If it is not a jump everything is the same except that there is no intermediate position
     else {
 
         boardArr[start.y - 1][start.x - 1] = nullptr;
         boardArr[end.y - 1][end.x - 1] = pieceToMove;
         pieceToMove->setCoordinate(end);
+        if(pieceToMove->checkIsKing())
+            pieceToMove->setIsKing(true);
     }
-
-
 }
 
-//In terms of board indexes
-Piece *Board::getPieceAt(Coordinate coord) {
+bool Board::isEndGame() const {
 
-    return this->boardArr[coord.y - 1][coord.x - 1];
-}
+    bool redPieceFound = false;
+    bool blackPieceFound = false;
+    bool redMoveFound = false;
+    bool blackMoveFound = false;
 
-void Board::display(const std::vector<Move>& possibleMoves) {
+    //Check if there are any red or black pieces and if there are red or black moves
+    for (auto &y: boardArr) {
+        for (auto currentPiece: y) {
 
-    char rowLetter = 'a';
-    int i = 0;
+            if(currentPiece != nullptr) {
 
-    std::cout << "   1    2    3    4    5    6    7    8\n +----+----+----+----+----+----+----+----+\n";
+                bool currentIsRed = currentPiece->getIsRed();
+                //Did you find a red Piece or a black Piece?
+                if ((!redPieceFound || !blackPieceFound)) {
 
-
-    for (int y = 1; y < 9; ++y) {
-
-        std::cout << rowLetter++;
-
-        for (int x = 1; x < 9; ++x) {
-
-
-            bool moveFound = false;
-
-            if (boardArr[y - 1][x - 1] != nullptr && boardArr[y - 1][x - 1]->getIsRed()) {
-                std::cout << "| ";
-                RED;
-                std::cout << "RR ";
-                NO_COLOR;
-
-            } else if (boardArr[y - 1][x - 1] != nullptr && !boardArr[y - 1][x - 1]->getIsRed()) {
-                std::cout << "| ";
-                BLACK;
-                std::cout << "BB ";
-                NO_COLOR;
-            }
-            else {
-                for (const auto &move: possibleMoves) {
-
-                    if (move.getEndingCoord().x == x && move.getEndingCoord().y == y) {
-                        std::cout << "| " << ++i << "  ";
-                        moveFound = true;
-                    }
-
+                    if (currentIsRed)
+                        redPieceFound = true;
+                    else
+                        blackPieceFound = true;
                 }
+                //Did you find a red Move or a black Move?
+                if (!redMoveFound && currentIsRed || !blackMoveFound && !currentIsRed) {
 
-                if(!moveFound)
-                    std::cout << "|    ";
+                    if (!currentPiece->getPossibleMoves(*this).empty()) {
+
+                        if (currentIsRed)
+                            redMoveFound = true;
+                        else
+                            blackMoveFound = true;
+                    }
+                }
             }
         }
-        std::cout << "|\n +----+----+----+----+----+----+----+----+\n";
     }
+
+    //Are there any red pieces?
+    if (!redPieceFound) {
+
+        this->display();
+
+        RED;
+        std::cout << "Red";
+        NO_COLOR;
+        std::cout <<" has no pieces left!!!\n";
+        BLACK;
+        std::cout << "Black";
+        NO_COLOR;
+        std::cout << " is the winner!!!!";
+        return true;
+    }
+    //Are there any black pieces?
+    else if (!blackPieceFound) {
+
+        this->display();
+
+        BLACK;
+        std::cout << "Black";
+        NO_COLOR;
+        std::cout <<" has no pieces left!!!\n";
+        RED;
+        std::cout << "Red";
+        NO_COLOR;
+        std::cout << " is the winner!!!!";
+        return true;
+    }
+    //Are there any red Moves?
+    else if (!redMoveFound) {
+
+        this->display();
+
+        RED;
+        std::cout << "Red";
+        NO_COLOR;
+        std::cout <<" has no moves!!!\n";
+        BLACK;
+        std::cout << "Black";
+        NO_COLOR;
+        std::cout << " is the winner!!!!";
+        return true;
+    }
+    //Are there any black Moves?
+    else if (!blackMoveFound) {
+
+        this->display();
+
+        BLACK;
+        std::cout << "Black";
+        NO_COLOR;
+        std::cout <<" has no moves!!!\n";
+        RED;
+        std::cout << "Red";
+        NO_COLOR;
+        std::cout << " is the winner!!!!";
+        return true;
+    } else
+        return false;
 }

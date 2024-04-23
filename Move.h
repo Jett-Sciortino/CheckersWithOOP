@@ -3,26 +3,56 @@
 
 #include "Piece.h"
 #include "Board.h"
-#include "TypeDef.h"
+#include "Coordinate.h"
 
 class Piece;
 class Board;
-
+/**
+ * A Move in the game of checkers
+ */
 class Move {
 private:
-    Coordinate start, end;
+    /**
+     * The starting Coordinate of the Move
+     */
+    Coordinate start;
+    /**
+     * The ending Coordinate of the Move
+     */
+    Coordinate end;
+    /**
+     * True if the Move is a jumping move
+     */
     bool isJump;
 
 public:
+    /**
+     * Default constructor. Used for declaring std::vector<Move>
+     */
     Move();
 
+    /**
+     * Constructs a Move object with the following parameters
+     * @param start the starting Coordinate of the Move
+     * @param end the ending Coordinate of the Move
+     * @param isJump is true if the Move is a jumping move
+     */
     Move(Coordinate start, Coordinate end, bool isJump);
 
-    Coordinate getStartingCoord() const;
+    /**
+     * @return the starting Coordinate of the Move
+     */
+    [[nodiscard]] Coordinate getStartingCoord() const;
 
-    Coordinate getEndingCoord() const;
+    /**
+     * @return the ending Coordinate of the Move
+     */
+    [[nodiscard]] Coordinate getEndingCoord() const;
 
-    bool getIsJump();
+    /**
+     * returns true if the Move is a jump
+     */
+    [[nodiscard]] bool getIsJump() const;
 };
 
 

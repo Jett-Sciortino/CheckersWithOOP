@@ -79,6 +79,12 @@ build CMakeFiles/CheckersWithOOP.dir/Player.cpp.obj: CXX_COMPILER__CheckersWithO
   OBJECT_DIR = CMakeFiles\CheckersWithOOP.dir
   OBJECT_FILE_DIR = CMakeFiles\CheckersWithOOP.dir
 
+build CMakeFiles/CheckersWithOOP.dir/Coordinate.cpp.obj: CXX_COMPILER__CheckersWithOOP_unscanned_Debug C$:/Users/jetts/CLionProjects/CheckersWithOOP/Coordinate.cpp || cmake_object_order_depends_target_CheckersWithOOP
+  DEP_FILE = CMakeFiles\CheckersWithOOP.dir\Coordinate.cpp.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\CheckersWithOOP.dir
+  OBJECT_FILE_DIR = CMakeFiles\CheckersWithOOP.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target CheckersWithOOP
@@ -87,7 +93,7 @@ build CMakeFiles/CheckersWithOOP.dir/Player.cpp.obj: CXX_COMPILER__CheckersWithO
 #############################################
 # Link the executable CheckersWithOOP.exe
 
-build CheckersWithOOP.exe: CXX_EXECUTABLE_LINKER__CheckersWithOOP_Debug CMakeFiles/CheckersWithOOP.dir/main.cpp.obj CMakeFiles/CheckersWithOOP.dir/Piece.cpp.obj CMakeFiles/CheckersWithOOP.dir/Move.cpp.obj CMakeFiles/CheckersWithOOP.dir/Board.cpp.obj CMakeFiles/CheckersWithOOP.dir/Player.cpp.obj
+build CheckersWithOOP.exe: CXX_EXECUTABLE_LINKER__CheckersWithOOP_Debug CMakeFiles/CheckersWithOOP.dir/main.cpp.obj CMakeFiles/CheckersWithOOP.dir/Piece.cpp.obj CMakeFiles/CheckersWithOOP.dir/Move.cpp.obj CMakeFiles/CheckersWithOOP.dir/Board.cpp.obj CMakeFiles/CheckersWithOOP.dir/Player.cpp.obj CMakeFiles/CheckersWithOOP.dir/Coordinate.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\CheckersWithOOP.dir

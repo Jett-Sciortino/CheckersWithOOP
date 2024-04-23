@@ -1,7 +1,7 @@
 #include "Move.h"
-#include "TypeDef.h"
+#include "Coordinate.h"
 
-Move::Move() {
+Move::Move() : start(Coordinate(0, 0)), end(Coordinate(0, 0)), isJump(false) {
 
 }
 
@@ -22,7 +22,7 @@ Coordinate Move::getEndingCoord() const {
     return this->end;
 }
 
-bool Move::getIsJump() {
+bool Move::getIsJump() const {
 
     return this->isJump;
 }

@@ -12,4 +12,6 @@ add_executable(CheckersWithOOP main.cpp
         Board.cpp
         Player.h
         Player.cpp
-        TypeDef.h)
+        Coordinate.cpp
+        Coordinate.h
+        TextColor.h)
