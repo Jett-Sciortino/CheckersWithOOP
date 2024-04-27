@@ -16,7 +16,7 @@ class Move;
 class Board {
 public:
     /**
-     * Used for outputting colored text to the console
+     * Used for outputting colored text to the console in windows
      */
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     /**

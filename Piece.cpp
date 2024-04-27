@@ -2,7 +2,7 @@
 #include "Coordinate.h"
 #include <vector>
 
-Piece::Piece(bool isRed, Coordinate coordinate) : isRed(isRed){
+Piece::Piece(bool isRed, Coordinate coordinate) : isRed(isRed) {
 
     this->coordinate = coordinate;
     this->isKing = false;
@@ -20,7 +20,7 @@ std::vector<Move> Piece::getPossibleMoves(Board board) const {
     int pieceX = this->coordinate.x, pieceY = this->coordinate.y,
         yIncrement = 1, rows = 1;
 
-    //Red Pieces move in the negatve y direction
+    //Red Pieces move in the negative y direction
     if(this->isRed)
         yIncrement = -1;
 
